@@ -1,0 +1,133 @@
+\documentclass[12pt,oneside,a4paper]{article}
+\usepackage[utf8]{inputenc}
+ \usepackage{booktabs}
+
+\title{Acceleration and Braking Recognition}
+\author{Felipe Bombardelli}
+\bibliographystyle{plain}
+
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+
+The problem is identify
+
+Your task is to write a script (in Python) which reads a single WAV file similar to what you can see in Testing data and returns predictions of braking or accelerating trams according to classes used in the dataset. The output should be in CSV format as described below. Please attach also a results visualization of your choice. The script should be executable on Unix and should contain only open-source libraries.
+Please, provide also a brief report about your thoughts, your approach, what other possibilities you considered, why did you decided for that one, and an estimation how well your model is going to perform on our testing data.
+email
+
+
+Data are labeled as follows :
+
+\begin{enumerate}
+	\item Negative - Checked
+	\item Accelerating - 1\_New
+	\item Accelerating - 2\_CKD\_Long
+	\item Accelerating - 3\_CKD\_Short
+	\item Accelerating - 4\_Old
+	\item Braking - 1\_New - Skoda T15
+	\item Braking - 2\_CKD\_Long - Tatra KT8D5R.N2P
+	\item Braking - 3\_CKD\_Short - Tatra T6A5 one or two carriages
+	\item Braking - 4\_Old - Tatra T3 and all its modifications, one or two carriages
+\end{enumerate}
+
+
+\section{State of Art}
+
+There is no work about train recognizing by sound on the IEEEXplorer, but there some
+works about environmental sound recognition.
+
+
+\section{Program Structure}
+
+The code of solution was divided on 3 modules for a better organization and reuse
+of code. The first module called dataset is responsible by handle and normalize the dataset.
+The second, way\_classic is responsible by training, evaluation and performance
+classifiers like KNN, Neural Network and SVM. And by last, way\_cnn is responsible
+by training, evaluation and performance classifier using Convolution
+Neural Network (CNN).
+
+\subsection{Dependencies}
+
+\begin{itemize}
+	\item pip3 install pickle
+	\item pip3 install sklearn
+	\item pip3 install librosa
+	\item pip3 install tensorflow
+	\item pip3 install keras
+	\item pip3 install cv2
+\end{itemize}
+
+
+\subsection{Execution}
+
+./program ./path/teste.wav [-c cnn,svm,nn,knn] [-f 25] [-t 155]
+
+
+
+\section{Dataset}
+
+The dataset has 2996 samples with one channel and rate 22050 Hz divided by 9
+classes, as shown in the table.
+
+\begin{table}[] \begin{tabular}{@{}llll@{}}
+	\toprule
+	Id & Label                      & Samples  & Average Duration \\ \midrule
+	0  & negative/checked           & 828      & 9.83             \\
+	1  & accelerating/1\_New        & 493      & 3.57             \\
+	2  & accelerating/2\_CKD\_Long  & 169      & 3.57             \\
+	3  & accelerating/3\_CKD\_Short & 74       & 3.56             \\
+	4  & accelerating/4\_Old        & 410      & 3.38             \\
+	5  & braking/1\_New             & 381      & 4.58             \\
+	6  & braking/2\_CKD\_Long       & 143      & 4.51             \\
+	7  & braking/3\_CKD\_Short      & 62       & 4.35             \\
+	8  & braking/4\_Old             & 436      & 3.95             \\ \bottomrule
+\end{tabular} \end{table}
+
+
+
+
+\subsection{Data Normalize}
+
+Existem algumas maneiras para representar o som,
+
+Time-Frequency Representations
+	short-time Fourier transform (STFT) with linear and Mel scales,
+	constant-Q transform (CQT)
+	continuous Wavelet transform (CWT)
+
+"In the domain of environmental sound it has been noted that
+time-frequency representations are especially useful as learn-
+ing features [14][15][16][17][18] due to the non-stationary
+and dynamic nature of the sounds." \cite{huzaifah-features}
+
+
+The sounds have different duration and it needs to divide the sound in little window
+with same size. So the descriptors on these windows have the same size and it possible
+to use them with a classifier.
+
+
+\subsection{Methodology}
+
+%It performs some tests to choice the window size as 155 and frequency resolution
+
+The dataset was divided in 75% to train and 25% to test.
+
+
+
+\section{Results}
+
+
+\section{Discussion}
+
+
+\section{Conclusion}
+
+
+
+\bibliography{research}
+
+\end{document}
