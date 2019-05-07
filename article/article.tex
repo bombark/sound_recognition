@@ -17,7 +17,7 @@
 
 \section{Introduction}
 
-The work aims to recognize the sound of train, when they braking or accelerating, from a WAV file using SVM and Convolution Neural Network (CNN) like classifier. There is no work about train recognizing on the IEEEXplorer, but there some works about environmental sound recognition \cite{chachada-survey}\cite{huzaifah-features}.
+The work aims to recognize the sound of train, when they braking or accelerating, from a WAV file using SVM and Convolution Neural Network (CNN) like classifier. There is no work about train recognizing on the IEEEXplorer, but there some works about environmental sound recognition \cite{chachada-survey}\cite{huzaifah-features}\cite{piczak}.
 
 
 
@@ -126,7 +126,7 @@ The evaluating of the classifiers used 25 frequency resolution and window size o
 	\caption{Accuracies of the classifiers using frequency resolution=25 and window size=150}
 \end{table}
 
-Although the result of CNN-flat was 0.89, when the classifier was aplied in the real-world scenario, it don't have apparently the same accuracy, how showed in the figure \ref{fig:result_real}. Because in the same braking or accelerating have multiples classes of the trains.
+Although the result of CNN-flat was 0.89, when the classifier was applied in the real-world scenario, it don't have apparently the same accuracy, how showed in the figure \ref{fig:result_real}. Because in the same braking or accelerating have multiples classes of the trains.
 
 \begin{figure}[H]
 	\centering
@@ -137,7 +137,7 @@ Although the result of CNN-flat was 0.89, when the classifier was aplied in the 
 
 
 \section{Conclusion}
-	The accuracies on the tests on 30% of the dataset was good, but this same result don't appear in the real scenario. Maybe using 2 classifier, the first only classifies between accelerating or braking, and the second classifier the type of the train. So it is possible to avoid to classify different trains classes for the same braking or accelerating. Other detail, that can to improve the result, is balance the amount of samples of the classes to train the classifier.
+	The accuracies on the tests on 30\% of the dataset was good, but this same result don't appear in the real scenario. Maybe using 2 classifier, the first only classifies between accelerating or braking, and the second classifier the type of the train. So it is possible to avoid to classify different trains classes for the same braking or accelerating. Other detail, that can to improve the result, is balance the amount of samples of the classes to train the classifier.
 
 
 \bibliography{research}
