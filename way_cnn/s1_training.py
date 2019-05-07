@@ -2,16 +2,18 @@
 
 #=================================  HEADER  ====================================
 
+import sys
 import os
 import datasetmod as dataset
 import argparse
-from sklearn.model_selection import train_test_split
-import tensorflow as tf
 
+import tensorflow as tf
 import keras
 from keras.models import Sequential
-from keras.layers import Dense, Activation, Dropout, Flatten, Conv2D, MaxPooling2D
+from keras.layers import Dense, Activation, Dropout
+from keras.layers import Flatten, Conv2D, MaxPooling2D
 from keras.layers.normalization import BatchNormalization
+from sklearn.model_selection    import train_test_split
 
 #-------------------------------------------------------------------------------
 
@@ -20,22 +22,23 @@ from keras.layers.normalization import BatchNormalization
 #===============================  FUNCTIONS  ===================================
 
 def make_model(freq_res, time):
+	# Simple model
 	model = Sequential([
-		Flatten(input_shape=(freq_res, time)),
-		Dense(16, activation=tf.nn.relu), #512
+		Flatten(input_shape=(freq_res, time, 1)),
+		#Dense(16, activation=tf.nn.relu), #512
 		BatchNormalization(),
 		Dense(9, activation=tf.nn.softmax)
 	])
 
+	# piczak model
 	# model = Sequential([
-	# 	Conv2D(3, kernel_size=(3, 3), activation='relu', input_shape=(freq_res,time,1)),
-	# 	MaxPooling2D(pool_size=(2, 2)),
+	# 	Conv2D(80, kernel_size=(12, 6), activation='relu', input_shape=(freq_res,time,1)),
+	# 	MaxPooling2D(pool_size=(6, 3)),
 	# 	Flatten(),
+	# 	#MaxPooling2D(pool_size=(1, 3)),
 	# 	BatchNormalization(),
 	# 	Dense(9, activation=tf.nn.softmax)
 	# ])
-
-
 	model.compile(
 		optimizer='adam',
 		loss='sparse_categorical_crossentropy',
@@ -44,10 +47,12 @@ def make_model(freq_res, time):
 	return model
 
 
+
 def exec(desc, freq_res, time):
+	# make the model and if exists already, load the weights
 	model_url = "./checkpoints/{}-{}-{}".format(desc,freq_res,time)
+	model = make_model(freq_res,time)
 	if os.path.exists(model_url):
-		model = make_model(freq_res,time)
 		model.load_weights('./checkpoints/{}-{}-{}'.format(desc, freq_res, time))
 		return model
 
@@ -55,15 +60,15 @@ def exec(desc, freq_res, time):
 	y_data, x_data = dataset.load_data(desc,freq_res,time)
 	x_train, x_test, y_train, y_test = train_test_split(x_data, y_data, test_size=0.3, random_state=42)
 
-	# make the model and training
-	print("- Training a CNN")
-	#x_train = x_train.reshape(len(x_train),freq_res,time,1)
-	print(x_train.shape)
-	model = make_model(freq_res,time)
+	# training the model
+	print("- Training a CNN", file=sys.stderr)
+	x_train = x_train.reshape(len(x_train),freq_res,time,1)
+
+	print(x_train.shape, file=sys.stderr)
 	model.fit(
-		x_train, y_train,
-		epochs = 10,
-		verbose=1
+		x_train, y_train
+		, epochs = 10
+		, verbose=1
 	)
 
 	# save the model
@@ -82,7 +87,7 @@ if __name__ == "__main__":
 	parser = argparse.ArgumentParser(description='Process some integers.')
 	parser.add_argument('-d','--desc', help='mel or stft', default='mel')
 	parser.add_argument('-f','--freq_res', help='frequency resolution', default=25)
-	parser.add_argument('-t','--time', help='window size', default=155)
+	parser.add_argument('-t','--time', help='window size', default=150)
 	args = parser.parse_args()
 	exec(args.desc, int(args.freq_res), int(args.time))
 

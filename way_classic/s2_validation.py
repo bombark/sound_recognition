@@ -51,7 +51,7 @@ if __name__ == "__main__":
 	parser.add_argument('-c','--cfs', help='knn, svm or nn', default='svm')
 	parser.add_argument('-d','--desc', help='mel or stft', default='mel')
 	parser.add_argument('-f','--freq_res', help='frequency resolution', default=25)
-	parser.add_argument('-t','--time', help='window size', default=155)
+	parser.add_argument('-t','--time', help='window size', default=150)
 	args = parser.parse_args()
 	acc = exec(args.cfs,args.desc,int(args.freq_res),int(args.time))
 	print( acc )

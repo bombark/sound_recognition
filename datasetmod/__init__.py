@@ -1,6 +1,7 @@
 #=================================  HEADER  ====================================
 
 import os
+import sys
 import librosa
 import numpy as np
 import librosa.display
@@ -54,7 +55,11 @@ def label2id(label,sublabel):
 
 
 def normalize(type, freq_res, time):
-	print("- Normalizing the dataset to (type: {}, freq_res: {}, time: {})".format(type, freq_res, time))
+	print(
+		"- Normalizing the dataset to (type: {}, freq_res: {}, time: {})".format
+		(type, freq_res, time), file=sys.stderr
+	)
+
 	dataset_url = _get_dataset_path(type, freq_res, time)
 	if os.path.exists( os.path.join(dataset_url,".ok") ):
 		return;
@@ -67,7 +72,7 @@ def normalize(type, freq_res, time):
 
 	for klass in ["accelerating","braking","negative"]:
 		for subklass in os.listdir( os.path.join(root_dbraw,klass) ):
-			print("\t",klass,subklass)
+			print("\t", klass, subklass, file=sys.stderr)
 			id = 0
 			sum_duration = 0.0
 			sum_descsize = 0.0
@@ -85,7 +90,9 @@ def normalize(type, freq_res, time):
 
 			avg_duration = sum_duration/id
 			avg_size = sum_descsize/id
-			print("\t\tamount: {}, duration avg: {:.2f}s, size avg: {:.2f}".format(id,avg_duration,avg_size))
+			print("\t\tamount: {}, duration avg: {:.2f}s, size avg: {:.2f}".format
+				(id,avg_duration,avg_size), file=sys.stderr
+			)
 
 	with open( os.path.join(root_norm, ".ok"), "w" ) as fd:
 		fd.write("ok")
@@ -96,7 +103,9 @@ def load_data(type, freq_res, time):
 	if not os.path.exists( os.path.join(dataset_url,".ok") ):
 		normalize(type, freq_res, time)
 
-	print("- Loading the dataset (type: {}, freq_res: {}, time: {})".format(type, freq_res, time))
+	print("- Loading the dataset (type: {}, freq_res: {}, time: {})".format
+		(type, freq_res, time), file=sys.stderr
+	)
 	_x_data = []
 	y_data = []
 	dataset_url = _get_dataset_path(type, freq_res, time)
@@ -117,7 +126,9 @@ def load_data(type, freq_res, time):
 def load_realfile( url_sound, freq_res ):
 	y, sr = librosa.load(url_sound)
 	duration = librosa.get_duration(y=y, sr=sr)
-	mel = librosa.feature.melspectrogram(y=y, sr=sr, n_mels=freq_res, fmax=freq_max)
+	mel = librosa.feature.melspectrogram(
+		y=y, sr=sr, n_mels=freq_res, fmax=freq_max
+	)
 	return mel, duration
 
 
@@ -128,7 +139,9 @@ def load_realfile( url_sound, freq_res ):
 #===========================  PRIVATE FUNCTIONS  ===============================
 
 def _get_dataset_path(type,freq_res,time):
-	return os.path.join( _find_project_root(), "datasetmod/{}-{}-{}".format(type,freq_res,time) )
+	return os.path.join( _find_project_root(), "datasetmod/{}-{}-{}".format
+		(type,freq_res,time)
+	)
 
 def _find_project_root():
 	cur = "./"
@@ -142,18 +155,6 @@ def _find_project_root():
 		raise BaseException("file .root not found")
 	return cur #os.path.join( cur, "dataset" )
 
-
-# def dir2matrix(path):
-# 	res = []
-# 	for file in os.listdir(path):
-# 		url = os.path.join(path,file)
-# 		y, sr = librosa.load(url)
-# 		#D = np.abs(librosa.stft(y))**2
-# 		#librosa.feature.melspectrogram(y=y, sr=sr)
-# 		#S = librosa.feature.melspectrogram(S=D)
-# 		freq = librosa.feature.melspectrogram(y=y, sr=sr, n_mels=250, fmax=5000)
-# 		res.append( freq )
-# 	return res
 
 
 def line_sum_of_image(image,line):
@@ -172,7 +173,9 @@ def load_and_divide(url_sound, type, freq_res=250, max_cols=125):
 
 	# build the descriptor
 	if type == "mel":
-		mel = librosa.feature.melspectrogram(y=y, sr=sr, n_mels=freq_res, fmax=freq_max)
+		mel = librosa.feature.melspectrogram(
+			y=y, sr=sr, n_mels=freq_res, fmax=freq_max
+		)
 	elif type == "stft":
 		mel = librosa.feature.chroma_stft(y=y, sr=sr, hop_length=512)
 	else:
@@ -210,6 +213,3 @@ def pack_and_serialize(klass,subklass,image):
 	return pickle.dumps(data)
 
 #-------------------------------------------------------------------------------
-
-
-#normalize_dataset(60,125)

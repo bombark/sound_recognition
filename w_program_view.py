@@ -7,6 +7,8 @@ import sys
 import argparse
 import datasetmod  as dataset
 import numpy       as np
+import cv2
+import math
 
 #-------------------------------------------------------------------------------
 
@@ -49,16 +51,18 @@ def exec(sound_url, classifier_name, freq_res, time):
 		cols = sound.shape[1]
 		sec  = cols / duration;
 
-		# write the header of CSV
-		print("seconds_offset", end='')
-		for label in dataset.labels:
-			print(",",label, end='')
-		print("")
-
 		# start the recognition
 		last_id = 0
 		last_count = 0
 		last_time = 0
+
+
+		sound_rgb = cv2.convertScaleAbs(sound, alpha=255, beta=30)
+		sound_rgb = cv2.cvtColor(sound_rgb, cv2.COLOR_GRAY2RGB)
+
+		res = np.zeros( (rows*2,cols,3), dtype=np.uint8 )
+		res[0:rows,0:cols] = sound_rgb
+
 		for i in range( 0, cols-time, 11 ):
 			window = sound[0:rows, i:i+time]
 			time_cur = i / sec
@@ -76,18 +80,25 @@ def exec(sound_url, classifier_name, freq_res, time):
 			else:
 				y = _y[0]
 
-			# show the predict when there is a changing
-			if y != last_id:
-				if last_id > 0 and last_count > 1:
-					show_line(last_time,last_id)
-				last_id = y
-				last_count = 1
-				last_time  = time_cur
-			else:
-				last_count += 1
+			if y > 0:
+				colors = [
+					(0,0,0)
+					, (0,64,0), (0,128,0), (0,192,0), (0,255,0)
+					, (0,0,64), (0,0,128), (0,0,192), (0,0,255)
+				]
+				cv2.rectangle(res,(i,rows),(i+11,rows+(rows//2)), colors[y], -1)
 
-		if last_id > 0:
-			show_line(last_time,last_id)
+
+		lines = math.ceil(cols//800)
+		broked = np.zeros( (rows*2*lines,800,3), dtype=np.uint8 )
+		for line in range(0,cols//800):
+			ini_x = line*800
+			ini_y = line*rows*2
+			end_y = ini_y+rows*2
+			broked[ini_y:end_y, 0:800] = res[:,ini_x:ini_x+800]
+
+		cv2.imshow("w",broked)
+		cv2.waitKey(0)
 
 
 #-------------------------------------------------------------------------------

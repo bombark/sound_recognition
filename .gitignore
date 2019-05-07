@@ -1,4 +1,8 @@
 bib/*.pdf
+tram_demo.tar.gz
+dataset/
+test_files/
+video_files/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
