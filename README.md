@@ -16,3 +16,6 @@ tar xvf tram_demo.tar.gz
 
 cd ./project/
 ./program ./test_files/tram-2018-11-30-15-30-17.wav [-c cnn|nn|knn|svm ]
+
+Obs: The CNN classifier is ever trained and loaded automatically, but the others
+     classifiers needed to be trained. 
